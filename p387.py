@@ -6,7 +6,7 @@ def naive_prime(k):
     return True
 harshads[1] = [1,2,3,4,5,6,7,8,9]
 
-for nDigits in range(2, 14):
+for nDigits in range(2, 15):
     harshads[nDigits] = []
     exists = harshads[nDigits-1]
     for aExist in exists:
@@ -17,18 +17,25 @@ for nDigits in range(2, 14):
                 harshads[nDigits].append(combined)
 
 print("finished getting harshads")
-print(harshads)
 
-"""
+# Filter down to only strong harshads
 
-runningSum = 0
-for nDigits in range(2, 5):
+newharshads = []
+
+for nDigits in range(2,14):
+    print(nDigits)
     cands = harshads[nDigits]
     for aCand in cands:
         sumDigits = sum([int(x) for x in str(aCand)])
         if naive_prime(aCand/sumDigits):
-            print(aCand)
-            runningSum += aCand
+            newharshads.append(aCand)
+
+runningSum = 0
+for aCand in newharshads:
+    newlyFormed = [aCand*10+x for x in [1,3,7,9]]
+    for aNew in newlyFormed:
+        if naive_prime(aNew):
+            print(aNew)
+            runningSum += aNew
 
 print(runningSum)
-"""
