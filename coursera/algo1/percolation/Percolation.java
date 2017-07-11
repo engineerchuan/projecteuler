@@ -2,12 +2,12 @@
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
     private boolean[] active;
-    private WeightedQuickUnionUF uf1;
-    private WeightedQuickUnionUF uf2;
+    private final WeightedQuickUnionUF uf1;
+    private final WeightedQuickUnionUF uf2;
     private final int n;
     public Percolation(int n) {
         
-        if (n < 0) {
+        if (n < 1) {
             throw new IllegalArgumentException("input argument less than 0");
         }
         
@@ -49,7 +49,7 @@ public class Percolation {
         return isOpen(row, col) && uf1.connected(coord2ind(row, col), n*n);
     }
     private void checkDimensions(int row, int col) {
-        if (row < 0 || row > n || col < 0 || col > n) {
+        if (row < 1 || row > n || col < 1 || col > n) {
             throw new IllegalArgumentException("Row / column exceeds boundaries");
         }
     }
