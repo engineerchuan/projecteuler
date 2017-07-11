@@ -9,8 +9,8 @@ public class PercolationStats {
     private final double stddev;
     
     public PercolationStats(int n, int trials) {
-        if (n < 0) throw new IllegalArgumentException("n cannot be les than 0");
-        if (trials < 0) throw new IllegalArgumentException("trials cannot be les than 0");        
+        if (n < 1) throw new IllegalArgumentException("n cannot be les than 1");
+        if (trials < 1) throw new IllegalArgumentException("trials cannot be less than 1");        
         
         percOpen = new double[trials];
         
