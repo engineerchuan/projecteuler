@@ -1,31 +1,24 @@
 // import edu.princeton.cs.algs4.StdOut;
-
+import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
     private boolean[] active;
-    private int[] parents;
-    private int[] weights;
+    private WeightedQuickUnionUF uf1;
+    private WeightedQuickUnionUF uf2;
     private final int n;
-    
     public Percolation(int n) {
         
         if (n < 0) {
             throw new IllegalArgumentException("input argument less than 0");
         }
+        
+        uf1 = new WeightedQuickUnionUF(n*n+1);
+        uf2 = new WeightedQuickUnionUF(n*n+2);
+        
         // there are n*n grids, the n*nth grid represents the "Top"
         // the n*n+1 th grid represents the "Bottom"
         active = new boolean[n*n+2];
-        parents = new int[n*n+2];
-        weights = new int[n*n+2];
         this.n = n;
         
-        // initialize all parents to empty
-        for (int i = 0; i < parents.length; ++i) {
-            parents[i] = i; // -1 means empty
-        }
-        // initialize all weights to 0
-        for (int i = 0; i < parents.length; ++i) {
-            weights[i] = 1;
-        }
         // everything is closed for now
         for (int i = 0; i < active.length; ++i) {
             active[i] = false;
@@ -34,13 +27,15 @@ public class Percolation {
         // Set up the Top Cell, and join entire first row to it
         active[n*n] = true;
         for (int i = 0; i < n; ++i) {
-            join(i, n*n); 
+            uf1.union(i, n*n);
+            uf2.union(i, n*n);
+            
         }
         
         // Set up the Bottom Cell, and join entire bottom row to it
         active[n*n+1] = true;
         for (int i = n*n-n; i < n*n; ++i) {
-            join(i, n*n+1);
+            uf2.union(i, n*n+1);
         }  
     }
     private int coord2ind(int row, int col) {
@@ -51,7 +46,7 @@ public class Percolation {
     }
     public boolean isFull(int row, int col) {
         checkDimensions(row, col);   
-        return isOpen(row, col) && this.isConnected(coord2ind(row, col), n*n);
+        return isOpen(row, col) && uf1.connected(coord2ind(row, col), n*n);
     }
     private void checkDimensions(int row, int col) {
         if (row < 0 || row > n || col < 0 || col > n) {
@@ -63,28 +58,14 @@ public class Percolation {
         return this.active[coord2ind(row, col)];
     }
 
-    private int findRoot(int index) {
-        while (index != this.parents[index]) {
-            index = this.parents[index];      
-        }
-        return index;     
-    }
-    private boolean isConnected(int index1, int index2) {
-        return findRoot(index1) == findRoot(index2);     
-    }
+
     private void join(int index1, int index2) {
-        if (findRoot(index1) == findRoot(index2)) {
+        if (uf1.connected(index1, index2)) {
             return; // nothing to do already joined
         }
         else {
-            if (weights[index1] >= weights[index2]) {
-                parents[findRoot(index2)] = findRoot(index1);
-                weights[findRoot(index1)] += weights[findRoot(index2)];
-            }
-            else {
-                parents[findRoot(index1)] = findRoot(index2);
-                weights[findRoot(index2)] += weights[findRoot(index1)];
-            }
+            uf1.union(index1, index2);
+            uf2.union(index1, index2);
         }
     }
     public void open(int row, int col) {
@@ -125,6 +106,6 @@ public class Percolation {
     }
     public boolean percolates() {
         if (1 == n && !this.active[0]) return false; 
-        return isConnected(n*n, n*n+1);
+        return uf2.connected(n*n, n*n+1);
     }
 }
