@@ -4,15 +4,15 @@ import edu.princeton.cs.algs4.StdOut;
 
 public class PercolationStats {
 
-    private double[] percOpen;
-    private int n;
-    private int trials;
+    private final double[] percOpen;
+    private final double mean;
+    private final double stddev;
     
-    public PercolationStats(int nInput, int trials) {
+    public PercolationStats(int n, int trials) {
+        if (n < 0) throw new IllegalArgumentException("n cannot be les than 0");
+        if (trials < 0) throw new IllegalArgumentException("trials cannot be les than 0");        
+        
         percOpen = new double[trials];
-        this.n = nInput;
-        this.trials = trials;
-        StdRandom.setSeed(0);
         
         for (int iTrial = 0; iTrial < trials; ++iTrial) {
             Percolation p = new Percolation(n);
@@ -21,24 +21,26 @@ public class PercolationStats {
                 int iCol = StdRandom.uniform(n) + 1;
                 p.open(iRow, iCol);
 
-                //StdOut.println(p.numberOfOpenSites());
+                // StdOut.println(p.numberOfOpenSites());
             }
-            //StdOut.println("iTrial: " + iTrial + ", " + p.numberOfOpenSites());
+            // StdOut.println("iTrial: " + iTrial + ", " + p.numberOfOpenSites());
             percOpen[iTrial] = ((double) p.numberOfOpenSites() / (double) (n*n));
         }
+        mean = StdStats.mean(percOpen);
+        stddev = StdStats.stddev(percOpen);
     }
     public double mean() {
-        return StdStats.mean(percOpen);    
-    }                          // sample mean of percolation threshold
+        return this.mean;
+    }
     public double stddev() {
-        return StdStats.stddev(percOpen);
-    }                        // sample standard deviation of percolation threshold
+        return this.stddev;
+    }
     public double confidenceLo() {
-        return mean() - 1.96 * stddev()/Math.sqrt((double) this.trials);
-    }                  // low  endpoint of 95% confidence interval
+        return this.mean - 1.96 * stddev()/Math.sqrt((double) percOpen.length);
+    }
     
     public double confidenceHi() {
-        return 2 * mean() - confidenceLo();
+        return 2 * this.mean - confidenceLo();
     } 
 
     public static void main(String[] args)  {

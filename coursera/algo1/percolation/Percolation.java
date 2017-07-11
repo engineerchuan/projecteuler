@@ -1,10 +1,10 @@
-//import edu.princeton.cs.algs4.StdOut;
+// import edu.princeton.cs.algs4.StdOut;
 
 public class Percolation {
     private boolean[] active;
     private int[] parents;
     private int[] weights;
-    private int n;
+    private final int n;
     
     public Percolation(int n) {
         
@@ -95,22 +95,22 @@ public class Percolation {
         // then go and find all the "neighbors", and then join them
         // Top neighbor
         if (row > 1 && this.isOpen(row-1, col)) {
-            //StdOut.println("joining with top neighbor");
+            // StdOut.println("joining with top neighbor");
             join(coord2ind(row, col), coord2ind(row-1, col));
         }
         // Bottom neighbor
         if (row < n && this.isOpen(row+1, col)) {
-            //StdOut.println("joining with bottom neighbor");
+            // StdOut.println("joining with bottom neighbor");
             join(coord2ind(row, col), coord2ind(row+1, col));
         }
         // Left neighbor
         if (col > 1 && this.isOpen(row, col-1)) {
-            //StdOut.println("joining with left neighbor");
+            // StdOut.println("joining with left neighbor");
             join(coord2ind(row, col), coord2ind(row, col-1));
         }
         // Right neighbor
         if (col < n && this.isOpen(row, col+1)) {
-            //StdOut.println("joining with right neighbor");
+            // StdOut.println("joining with right neighbor");
             join(coord2ind(row, col), coord2ind(row, col+1));
         }
     }
@@ -124,6 +124,7 @@ public class Percolation {
         return nCount;
     }
     public boolean percolates() {
+        if (1 == n && !this.active[0]) return false; 
         return isConnected(n*n, n*n+1);
     }
 }
