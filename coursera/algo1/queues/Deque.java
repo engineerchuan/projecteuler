@@ -1,6 +1,7 @@
 import java.util.Iterator;
 import edu.princeton.cs.algs4.StdOut;
 import java.util.NoSuchElementException;
+//import edu.princeton.cs.algs4.StdRandom;
 
 public class Deque<Item> implements Iterable<Item> {
     
@@ -24,16 +25,22 @@ public class Deque<Item> implements Iterable<Item> {
             throw new IllegalArgumentException();
         }
         if (0 == first) {
-            changeCapacity(2 * capacity);
+            changeCapacity(2 * capacity, true);
         }
         first -= 1;
         array[first] = item;
     }
     
-    private void changeCapacity(int newCapacity) {
+    private void changeCapacity(int newCapacity, boolean activateFirst) {
         // StdOut.println("changing capacity to " + newCapacity);
         Item[] newArray = (Item[]) new Object[newCapacity];
-        int newFirst = (newCapacity - last + first + 1)/2;
+        int newFirst;
+        if (activateFirst) {
+            newFirst = (newCapacity - last + first +1)/2;
+        }
+        else {
+            newFirst = (newCapacity - last + first)/2;        
+        }
         
         // StdOut.println("first changed from " + first + " to " + newFirst);
         // copy over all the entries
@@ -53,8 +60,8 @@ public class Deque<Item> implements Iterable<Item> {
         if (null == item) {
             throw new IllegalArgumentException();
         }
-        if (capacity == last) {
-            changeCapacity(2 * capacity);
+        if (capacity <= (last+1)) {
+            changeCapacity(2 * capacity, false);
         }
         
         array[last] = item;
@@ -65,23 +72,23 @@ public class Deque<Item> implements Iterable<Item> {
         if (this.isEmpty()) {
             throw new NoSuchElementException();
         }
-        if (this.size() <= capacity/4+1) {
-            changeCapacity(capacity/2);
+        if (this.size() <= capacity/4+1  && capacity >= 2) {
+            changeCapacity(capacity/2, true);
         }
-       
+        
         Item returnedFirst = array[first];
         array[first] = null;
         first += 1;
         
         return returnedFirst;
     }                // remove and return the item from the front
-
+    
     public Item removeLast() {
         if (this.isEmpty()) {
             throw new NoSuchElementException();
         }
-        if (this.size() <= capacity/4+1) {
-            changeCapacity(capacity/2);
+        if (this.size() <= capacity/4+1 && capacity >= 2) {
+            changeCapacity(capacity/2, false);
         }
         
         Item returnedLast = array[last-1];
@@ -100,7 +107,7 @@ public class Deque<Item> implements Iterable<Item> {
             return (current < last);
         }
         public void remove() {
-            throw new java.lang.UnsupportedOperationException();
+            throw new UnsupportedOperationException();
         }
         public Item next() {
             if (hasNext()) {
@@ -109,7 +116,7 @@ public class Deque<Item> implements Iterable<Item> {
                 return toReturn;
             }
             else {
-                throw new java.util.NoSuchElementException();
+                throw new NoSuchElementException();
             }
             
         }
@@ -124,23 +131,31 @@ public class Deque<Item> implements Iterable<Item> {
     }
     
     public static void main(String[] args) {
-        Deque<String> a = new Deque<String>();
-        a.addFirst("hi");
-        a.addFirst("whoa");
-        a.addLast("3");
-        a.addFirst("bye");
-        a.addLast("5");
-        a.addLast("6");
-        a.addLast("test");
-        a.printArray();
-        a.removeLast();
-        a.removeLast();
-        a.removeLast();
-        a.removeLast();
+//        Deque<String> a = new Deque<String>();
+//        //StdRandom.setSeed(40);
+//        for (int i = 0; i < 5000; ++i) {
+//            int randInt = StdRandom.uniform(0, 4);
+//            if (randInt == 0) {
+//                StdOut.println("added first");
+//               a.addFirst("first");
+//               
+//            } else if (randInt == 1) {
+//                StdOut.println("added last");
+//               a.addLast("last");
+//                                             
+//            } else if (randInt == 2 && !a.isEmpty()) {
+//                                              StdOut.println("removed first");
+//               a.removeFirst();
+//
+//            } else if (randInt == 3 && !a.isEmpty()) {
+//                               StdOut.println("removed last");
+//               a.removeLast();
+//
+//            }
+//a.printArray();
+//StdOut.println("first = " + a.first);
+//StdOut.println("last = " + a.last);
         
-        a.printArray();
-        for (String s : a) {
-            StdOut.println(s);
-        }
-    }   // unit testing (optional)
+    } 
+   // unit testing (optional)
 }
