@@ -4,15 +4,13 @@ import java.util.ArrayList;
 
 public class BruteCollinearPoints {
     
-    private final Point[] points;
     private final List<LineSegment> finalsegments;
     
     public BruteCollinearPoints(Point[] points) {
         finalsegments = new ArrayList<LineSegment>();
         if (points.length < 4) {
-            throw new IllegalArgumentException(" # points must be less than 4");
+            throw new IllegalArgumentException(" # points must be greater than 4");
         }
-        this.points = points;
         for (int i = 0; i < points.length; ++i) {
             for (int j = i+1; j < points.length; ++j) {
                 for (int k = j+1; k < points.length; ++k) {
